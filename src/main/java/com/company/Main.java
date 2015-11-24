@@ -1,11 +1,13 @@
 package com.company;
 
+import com.company.sol3.Sol3;
 import org.apache.commons.io.FileUtils;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
 
 public class Main {
 
@@ -64,6 +66,24 @@ public class Main {
 
         }
 
+        f = new File("chr.txt");
+        if(f.exists()) f.delete();
+        try{
+
+            f.createNewFile();
+
+        }catch (Exception e){
+
+        }try(FileWriter fr = new FileWriter(f)){
+            try(BufferedWriter br = new BufferedWriter(fr)){
+                for(SolInfo s : si){
+                    br.write("Len " + s.getSize() + " " + s.getObj().toString() + "\n\n");
+                }
+            }
+
+        }catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
 
     }
 
@@ -73,32 +93,50 @@ public class Main {
 
 //
         List<SolI> pipe = new ArrayList<>();
-        pipe.add(new Sol0());
-        pipe.add(new Sol1());
-        pipe.add(new Sol2());
-
+       // pipe.add(new Sol0());
+       // pipe.add(new Sol1());
+       // pipe.add(new Sol2());
+        pipe.add(new Sol3());
 
         SolInfo[] ls = get();
 
-        for(int i = 40; i <= 1000; i+= 40){
-            int idx = i/40-1;
-            SolInfo si = ls[idx];
-            for(SolI p : pipe){
-                SolInfo candidate = p.generate(i,100000,si);
-                candidate.check();
-                //System.out.printf("%15d", candidate.getDif());
+        final CountDownLatch latch = new CountDownLatch(1000/40);
 
-                if(candidate.getDif() < si.getDif()) {
-                    System.out.printf("length %d improvement by %d\n",i,si.getDif() - candidate.getDif());
-                    si = candidate;
-                }else{
-                    System.out.printf("length %d could not improve\n",i,si.getDif() - candidate.getDif());
+        for(int I = 40; I <= 1000; I+= 40){
 
+            final int i = I;
+            Thread t = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    int idx = i/40-1;
+                    SolInfo si = ls[idx];
+                    for(SolI p : pipe){
+                        SolInfo candidate = p.generate(i,1000,si);
+                        candidate.check();
+                        //System.out.printf("%15d", candidate.getDif());
+
+                        synchronized (pipe) {
+                            if (candidate.getDif() < si.getDif()) {
+                                System.out.printf("length %d improvement by %d\n", i, si.getDif() - candidate.getDif());
+                                si = candidate;
+                            } else {
+                                System.out.printf("length %d could not improve\n", i);
+
+                            }
+                        }
+                    }
+                    ls[idx] = si;
+                    latch.countDown();
                 }
+            });
+            t.start();
 
-            }
-            ls[idx] = si;
-            System.out.println();
+        }
+
+        try{
+            latch.await();
+        }catch (Exception e){
+
         }
 
         write(ls);

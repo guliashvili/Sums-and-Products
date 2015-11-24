@@ -11,6 +11,16 @@ public class SolInfo implements Comparable<SolInfo> {
     public int[] b = null;
     private long[] c = null;
     private int dif;
+    private Object obj;
+
+    public Object getObj() {
+        return obj;
+    }
+
+    public void setObj(Object obj) {
+        this.obj = obj;
+    }
+
     public SolInfo(Object[] num,int dif){
         a = num;
         this.dif = dif;
@@ -105,6 +115,11 @@ public class SolInfo implements Comparable<SolInfo> {
         return  sb.toString();
     }
 
+    public int getSize(){
+        if(a != null) return  a.length;
+        else if( b != null) return  b.length;
+        else return c.length;
+    }
 
 
     @Override

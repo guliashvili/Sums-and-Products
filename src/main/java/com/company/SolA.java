@@ -9,10 +9,15 @@ import java.util.TreeMap;
  */
 public abstract class SolA {
     protected static Random rnd = new Random();
-    public Map<Long,Integer> mp = new TreeMap<>();
+    protected Map<Long,Integer> mp = new TreeMap<>();
     public int[] num;
-    protected int dif;
-    void count(){
+    public int dif;
+
+    public int getDif() {
+        return dif;
+    }
+
+    protected void count(){
         for(int i = 0; i < num.length; i++)
             for(int j = i; j < num.length; j++){
                 Integer x = mp.putIfAbsent((long)num[i]+num[j],1);
