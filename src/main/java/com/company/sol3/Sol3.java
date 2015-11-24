@@ -21,11 +21,16 @@ import java.util.List;
  * Created by gguliash on 11/24/15.
  */
 public class Sol3 extends SolA implements SolI {
+    public static final List<Integer> primes = new ArrayList<>();
+    static {
+        for(int i =1; i <= 200 ; i++) if(new BigInteger(i+"").isProbablePrime(1000)) primes.add(i);
+    }
 
     private int LIM = 50000000;
     private void generate(List<Integer> numbers,int n,double PR_LESS){
         List<Integer> pr = new ArrayList<>();
-        for(int i =1; i <= PR_LESS ; i++) if(new BigInteger(i+"").isProbablePrime(1000)) pr.add(i);
+
+        for(int i = 0; i < primes.size() && primes.get(i) <= PR_LESS ; i++) pr.add(primes.get(i));
 
         for(int i=1; i <= LIM && numbers.size() < n; i++){
             int a = i;
