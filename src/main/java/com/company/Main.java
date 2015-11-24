@@ -111,7 +111,7 @@ public class Main {
                     int idx = i/40-1;
                     SolInfo si = ls[idx];
                     for(SolI p : pipe){
-                        SolInfo candidate = p.generate(i,1000,si);
+                        SolInfo candidate = p.generate(i,(long)2.5*24*60*60*1000,si);
                         candidate.check();
                         //System.out.printf("%15d", candidate.getDif());
 

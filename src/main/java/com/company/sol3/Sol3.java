@@ -111,7 +111,7 @@ public class Sol3 extends SolA implements SolI {
         EvolutionaryOperator<Chromosome> pipeline
                 = new EvolutionPipeline<>(operators);
 
-        FitnessEvaluator<Chromosome> fitnessEvaluator = new ChromosomeFitness(n,100);
+        FitnessEvaluator<Chromosome> fitnessEvaluator = new ChromosomeFitness(n,60*1000);
 
 
         engines.add(new GenerationalEvolutionEngine<Chromosome>(
@@ -173,7 +173,7 @@ public class Sol3 extends SolA implements SolI {
 
 
 
-        Chromosome result = engine.evolve(10, 1, 1, 2, new ElapsedTime(mil));
+        Chromosome result = engine.evolve(20, 2, 3, 2, new ElapsedTime(mil));
 
         SolInfo ret = result.res;
         ret.setObj(result);
